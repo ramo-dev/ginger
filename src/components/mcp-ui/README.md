@@ -15,7 +15,9 @@ mcp-ui/
 ## Components
 
 ### MCPToolPopover
+
 The main UI component for managing MCP extensions. Features:
+
 - Browse available MCPs from Docker catalog
 - View installation status
 - Install/uninstall MCPs
@@ -24,7 +26,9 @@ The main UI component for managing MCP extensions. Features:
 - Error handling with helpful guidance
 
 ### MCPInstallDialog
+
 Dialog component for confirming MCP installation/uninstallation:
+
 - Shows MCP details
 - Progress indicators
 - Success/error feedback
@@ -36,13 +40,14 @@ Dialog component for confirming MCP installation/uninstallation:
 // Import from the centralized index
 import { MCPToolPopover, MCPInstallDialog } from '@/components/mcp-ui'
 
-// Use in your component
+// Use in any client component
 <MCPToolPopover />
 ```
 
 ## Dependencies
 
 These components depend on:
+
 - `@/hooks/use-mcp-management` - MCP state management
 - `@/lib/store/mcp-store` - MCP preferences store
 - `@/lib/mcp/mcp.server` - Server-side MCP functions

@@ -1,4 +1,11 @@
-import { RiBox2Line, RiArrowDownSLine, RiWebhookLine, RiSearchLine, RiCloseLine, RiCheckLine } from '@remixicon/react'
+import {
+  RiBox2Line,
+  RiArrowDownSLine,
+  RiWebhookLine,
+  RiSearchLine,
+  RiCloseLine,
+  RiCheckLine,
+} from '@remixicon/react'
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import {
@@ -49,13 +56,16 @@ export function ModelPopover() {
 
   const filteredModels = React.useMemo(() => {
     if (!search) return models
-    return models.filter((model) =>
-      model.name.toLowerCase().includes(search.toLowerCase()) ||
-      model.id.toLowerCase().includes(search.toLowerCase())
+    return models.filter(
+      (model) =>
+        model.name.toLowerCase().includes(search.toLowerCase()) ||
+        model.id.toLowerCase().includes(search.toLowerCase()),
     )
   }, [models, search])
 
-  const openRouterModels = filteredModels.filter((m) => m.provider === 'openrouter')
+  const openRouterModels = filteredModels.filter(
+    (m) => m.provider === 'openrouter',
+  )
   const ollamaModels = filteredModels.filter((m) => m.provider === 'ollama')
 
   return (
@@ -65,7 +75,7 @@ export function ModelPopover() {
           variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="h-8 dark:border border-0 border-input/60 justify-between px-3 bg-muted/70 transition-all"
+          className="h-8 dark:border border-0 border-input/60 justify-between px-3 dark:bg-transparent bg-muted/70 transition-all"
         >
           <span className="flex items-center gap-2 truncate">
             {selectedModel ? (
@@ -73,7 +83,9 @@ export function ModelPopover() {
                 <span className="text-muted-foreground">
                   {getProviderIcon(selectedModel.provider)}
                 </span>
-                <span className="truncate font-medium">{selectedModel.name}</span>
+                <span className="truncate font-medium">
+                  {selectedModel.name}
+                </span>
               </>
             ) : (
               'Select model...'
@@ -82,7 +94,7 @@ export function ModelPopover() {
           <RiArrowDownSLine className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent 
+      <PopoverContent
         className="w-[320px] p-0 overflow-hidden shadow-xl border-border"
         align="start"
         sideOffset={8}
@@ -98,7 +110,10 @@ export function ModelPopover() {
               Choose your AI model provider
             </p>
           </div>
-          <Badge variant="outline" className="aspect-square font-mono font-medium px-2">
+          <Badge
+            variant="outline"
+            className="aspect-square font-mono font-medium px-2"
+          >
             {models.length}
           </Badge>
         </div>
@@ -136,7 +151,10 @@ export function ModelPopover() {
                   <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
                     OpenRouter
                   </span>
-                  <Badge variant="secondary" className="h-4 px-1.5 text-[9px] ml-auto">
+                  <Badge
+                    variant="secondary"
+                    className="h-4 px-1.5 text-[9px] ml-auto"
+                  >
                     {openRouterModels.length}
                   </Badge>
                 </div>
@@ -146,11 +164,11 @@ export function ModelPopover() {
                       key={model.id}
                       onClick={() => handleSelect(model.id, model.provider)}
                       className={cn(
-                        "w-full flex items-center gap-3 rounded-lg p-3 text-left transition-all",
-                        "hover:bg-muted/50",
+                        'w-full flex items-center gap-3 rounded-lg p-3 text-left transition-all',
+                        'hover:bg-muted/50',
                         selectedModelId === model.id
-                          ? "bg-primary/10 border border-primary/30"
-                          : "border border-transparent"
+                          ? 'bg-primary/10 border border-primary/30'
+                          : 'border border-transparent',
                       )}
                     >
                       <div className="flex-shrink-0">
@@ -181,7 +199,10 @@ export function ModelPopover() {
                   <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
                     Ollama (Local)
                   </span>
-                  <Badge variant="secondary" className="h-4 px-1.5 text-[9px] ml-auto">
+                  <Badge
+                    variant="secondary"
+                    className="h-4 px-1.5 text-[9px] ml-auto"
+                  >
                     {ollamaModels.length}
                   </Badge>
                 </div>
@@ -191,11 +212,11 @@ export function ModelPopover() {
                       key={model.id}
                       onClick={() => handleSelect(model.id, model.provider)}
                       className={cn(
-                        "w-full flex items-center gap-3 rounded-lg p-3 text-left transition-all",
-                        "hover:bg-muted/50",
+                        'w-full flex items-center gap-3 rounded-lg p-3 text-left transition-all',
+                        'hover:bg-muted/50',
                         selectedModelId === model.id
-                          ? "bg-primary/10 border border-primary/30"
-                          : "border border-transparent"
+                          ? 'bg-primary/10 border border-primary/30'
+                          : 'border border-transparent',
                       )}
                     >
                       <div className="flex-shrink-0">
@@ -220,7 +241,9 @@ export function ModelPopover() {
               <div className="flex flex-col items-center justify-center py-12 text-center opacity-60">
                 <RiSearchLine className="size-8 mb-2 text-muted-foreground" />
                 <p className="text-sm font-medium">No models found</p>
-                <p className="text-xs text-muted-foreground">Try a different search</p>
+                <p className="text-xs text-muted-foreground">
+                  Try a different search
+                </p>
               </div>
             )}
           </div>
@@ -234,7 +257,8 @@ export function ModelPopover() {
                 {getProviderIcon(selectedModel.provider)}
               </span>
               <span className="text-[11px] font-medium text-muted-foreground truncate">
-                Currently using: <span className="text-foreground">{selectedModel.name}</span>
+                Currently using:{' '}
+                <span className="text-foreground">{selectedModel.name}</span>
               </span>
             </div>
           </div>
@@ -243,3 +267,4 @@ export function ModelPopover() {
     </Popover>
   )
 }
+

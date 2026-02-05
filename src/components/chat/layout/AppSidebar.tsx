@@ -1,7 +1,8 @@
 import type { ComponentProps } from 'react'
 import Logo from '@/components/assets/Logo'
-import { ThreadList } from '@/components/assistant-ui/thread-list'
+//import { ThreadList } from '@/components/assistant-ui/thread-list'
 import { Sidebar, SidebarContent, SidebarHeader } from '@/components/ui/sidebar'
+import { ChatHistory } from './ChatHistory'
 
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
   return (
@@ -17,7 +18,7 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <ThreadList />
+        <ChatHistory />
       </SidebarContent>
     </Sidebar>
   )

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ModelSelector,
   ModelSelectorContent,
@@ -12,24 +10,24 @@ import {
   ModelSelectorLogoGroup,
   ModelSelectorName,
   ModelSelectorTrigger,
-} from "@/components/ai-elements/model-selector";
-import { CheckIcon } from "lucide-react";
-import { PromptInputButton } from "@/components/ai-elements/prompt-input";
+} from '@/components/ai-elements/model-selector'
+import { CheckIcon } from 'lucide-react'
+import { PromptInputButton } from '@/components/ai-elements/prompt-input'
 
 interface ModelType {
-  id: string;
-  name: string;
-  chef: string;
-  chefSlug: string;
-  providers: string[];
+  id: string
+  name: string
+  chef: string
+  chefSlug: string
+  providers: string[]
 }
 
 interface ModelSelectorComponentProps {
-  model: string;
-  setModel: (model: string) => void;
-  modelSelectorOpen: boolean;
-  setModelSelectorOpen: (open: boolean) => void;
-  models: ModelType[];
+  model: string
+  setModel: (model: string) => void
+  modelSelectorOpen: boolean
+  setModelSelectorOpen: (open: boolean) => void
+  models: ModelType[]
 }
 
 export const ModelSelectorComponent = ({
@@ -39,24 +37,17 @@ export const ModelSelectorComponent = ({
   setModelSelectorOpen,
   models,
 }: ModelSelectorComponentProps) => {
-  const selectedModelData = models.find((m) => m.id === model);
+  const selectedModelData = models.find((m) => m.id === model)
 
   return (
-    <ModelSelector
-      onOpenChange={setModelSelectorOpen}
-      open={modelSelectorOpen}
-    >
+    <ModelSelector onOpenChange={setModelSelectorOpen} open={modelSelectorOpen}>
       <ModelSelectorTrigger>
         <PromptInputButton>
           {selectedModelData?.chefSlug && (
-            <ModelSelectorLogo
-              provider={selectedModelData.chefSlug}
-            />
+            <ModelSelectorLogo provider={selectedModelData.chefSlug} />
           )}
           {selectedModelData?.name && (
-            <ModelSelectorName>
-              {selectedModelData.name}
-            </ModelSelectorName>
+            <ModelSelectorName>{selectedModelData.name}</ModelSelectorName>
           )}
         </PromptInputButton>
       </ModelSelectorTrigger>
@@ -64,7 +55,7 @@ export const ModelSelectorComponent = ({
         <ModelSelectorInput placeholder="Search models..." />
         <ModelSelectorList>
           <ModelSelectorEmpty>No models found.</ModelSelectorEmpty>
-          {["OpenAI", "Anthropic", "Google"].map((chef) => (
+          {['OpenAI', 'Anthropic', 'Google'].map((chef) => (
             <ModelSelectorGroup heading={chef} key={chef}>
               {models
                 .filter((m) => m.chef === chef)
@@ -72,8 +63,8 @@ export const ModelSelectorComponent = ({
                   <ModelSelectorItem
                     key={m.id}
                     onSelect={() => {
-                      setModel(m.id);
-                      setModelSelectorOpen(false);
+                      setModel(m.id)
+                      setModelSelectorOpen(false)
                     }}
                     value={m.id}
                   >
@@ -81,10 +72,7 @@ export const ModelSelectorComponent = ({
                     <ModelSelectorName>{m.name}</ModelSelectorName>
                     <ModelSelectorLogoGroup>
                       {m.providers.map((provider) => (
-                        <ModelSelectorLogo
-                          key={provider}
-                          provider={provider}
-                        />
+                        <ModelSelectorLogo key={provider} provider={provider} />
                       ))}
                     </ModelSelectorLogoGroup>
                     {model === m.id ? (
@@ -99,5 +87,5 @@ export const ModelSelectorComponent = ({
         </ModelSelectorList>
       </ModelSelectorContent>
     </ModelSelector>
-  );
-};
+  )
+}

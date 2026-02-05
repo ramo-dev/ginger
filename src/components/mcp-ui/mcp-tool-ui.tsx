@@ -40,7 +40,7 @@ import { Progress } from '@/components/ui/progress'
 import { useMCPManagement } from '@/hooks/use-mcp-management'
 import { useMCPStore } from '@/lib/store/mcp-store'
 import { MCPInstallDialog } from './mcp-install-dialog'
-import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
+import { TooltipIconButton } from '@/components/tooltip-icon-button'
 import { Button } from '@/components/ui/button'
 
 export function MCPToolPopover() {
@@ -50,7 +50,9 @@ export function MCPToolPopover() {
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
     null,
   )
-  const [sortBy, setSortBy] = React.useState<'name' | 'category' | 'status'>('name')
+  const [sortBy, setSortBy] = React.useState<'name' | 'category' | 'status'>(
+    'name',
+  )
   const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('asc')
   const [currentPage, setCurrentPage] = React.useState(1)
   const itemsPerPage = 12
@@ -60,16 +62,16 @@ export function MCPToolPopover() {
     action: 'install' | 'uninstall'
   }>({ open: false, mcp: null, action: 'install' })
 
-  const { 
-    mcpTools, 
-    status, 
-    isLoading, 
-    isInstalling, 
+  const {
+    mcpTools,
+    status,
+    isLoading,
+    isInstalling,
     isUninstalling,
-    error, 
-    refetch, 
-    installMCP, 
-    uninstallMCP 
+    error,
+    refetch,
+    installMCP,
+    uninstallMCP,
   } = useMCPManagement()
 
   // Dynamically get unique categories
@@ -79,7 +81,7 @@ export function MCPToolPopover() {
 
   const enabledCount = Object.values(enabledMCPs).filter(Boolean).length
 
-    // Reset page when filters change
+  // Reset page when filters change
   React.useEffect(() => {
     setCurrentPage(1)
   }, [search, selectedCategory, sortBy, sortOrder, activeTab])
@@ -105,7 +107,7 @@ export function MCPToolPopover() {
     // Apply sorting
     filtered.sort((a, b) => {
       let comparison = 0
-      
+
       switch (sortBy) {
         case 'name':
           comparison = a.name.localeCompare(b.name)
@@ -120,16 +122,24 @@ export function MCPToolPopover() {
           else comparison = a.name.localeCompare(b.name)
           break
       }
-      
+
       return sortOrder === 'asc' ? comparison : -comparison
     })
 
     return filtered
-  }, [mcpTools, search, enabledMCPs, activeTab, selectedCategory, sortBy, sortOrder])
+  }, [
+    mcpTools,
+    search,
+    enabledMCPs,
+    activeTab,
+    selectedCategory,
+    sortBy,
+    sortOrder,
+  ])
 
   // Pagination
   const paginatedTools = React.useMemo(() => {
-    if (error) return [];
+    if (error) return []
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
     return filteredTools.slice(startIndex, endIndex)
@@ -192,9 +202,7 @@ export function MCPToolPopover() {
             {error && (
               <div className="flex items-center gap-1.5 text-destructive">
                 <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
-                <span className="text-[10px]">
-                  {error.message}
-                </span>
+                <span className="text-[10px]">{error.message}</span>
               </div>
             )}
           </div>
@@ -213,7 +221,7 @@ export function MCPToolPopover() {
                 <RiRefreshLine className="size-3.5" />
               </TooltipIconButton>
             )}
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button
@@ -221,8 +229,16 @@ export function MCPToolPopover() {
                   size="sm"
                   className="h-7 px-2 text-[10px] gap-1.5"
                 >
-                  {sortOrder === 'asc' ? <RiSortAsc className="size-3" /> : <RiSortDesc className="size-3" />}
-                  {sortBy === 'name' ? 'Name' : sortBy === 'category' ? 'Category' : 'Status'}
+                  {sortOrder === 'asc' ? (
+                    <RiSortAsc className="size-3" />
+                  ) : (
+                    <RiSortDesc className="size-3" />
+                  )}
+                  {sortBy === 'name'
+                    ? 'Name'
+                    : sortBy === 'category'
+                      ? 'Category'
+                      : 'Status'}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
@@ -274,7 +290,7 @@ export function MCPToolPopover() {
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button
@@ -333,7 +349,7 @@ export function MCPToolPopover() {
               <TabsTrigger value="installed" className="text-xs">
                 Installed
                 <Badge className="ml-2 h-4 min-w-4 px-1 bg-primary/20 text-primary border-transparent hover:bg-primary/20">
-                  {mcpTools.filter(t => t.isInstalled).length}
+                  {mcpTools.filter((t) => t.isInstalled).length}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="enabled" className="text-xs">
@@ -383,7 +399,7 @@ export function MCPToolPopover() {
                       <p className="text-xs text-muted-foreground mb-3">
                         {error.helpfulMessage}
                       </p>
-                      
+
                       <div className="flex items-center gap-2 mb-3">
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                           <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
@@ -393,7 +409,7 @@ export function MCPToolPopover() {
                           • Auto-refresh disabled
                         </div>
                       </div>
-                      
+
                       {error.documentationUrl && (
                         <a
                           href={error.documentationUrl}
@@ -405,20 +421,25 @@ export function MCPToolPopover() {
                           <RiExternalLinkLine className="size-3" />
                         </a>
                       )}
-                      
+
                       {error.type === 'docker_not_running' && (
                         <div className="mt-3 p-2 rounded bg-background/50 border">
                           <p className="text-xs text-muted-foreground mb-2">
                             <strong>Quick steps to fix:</strong>
                           </p>
                           <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
-                            <li>Start Docker Desktop from your Applications folder</li>
-                            <li>Wait for Docker to fully start (green status indicator)</li>
+                            <li>
+                              Start Docker Desktop from your Applications folder
+                            </li>
+                            <li>
+                              Wait for Docker to fully start (green status
+                              indicator)
+                            </li>
                             <li>Click the refresh button above to reconnect</li>
                           </ol>
                         </div>
                       )}
-                      
+
                       {error.type === 'docker_not_installed' && (
                         <div className="mt-3 p-2 rounded bg-background/50 border">
                           <p className="text-xs text-muted-foreground mb-2">
@@ -427,22 +448,25 @@ export function MCPToolPopover() {
                           <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
                             <li>Download and install Docker Desktop</li>
                             <li>Restart your computer after installation</li>
-                            <li>Start Docker Desktop and wait for it to initialize</li>
+                            <li>
+                              Start Docker Desktop and wait for it to initialize
+                            </li>
                             <li>Click the refresh button above to reconnect</li>
                           </ol>
                         </div>
                       )}
-                      
+
                       <div className="mt-3 p-2 rounded bg-primary/5 border border-primary/20">
                         <p className="text-xs text-primary mb-2">
-                          <strong>Note:</strong> Once Docker is running, the catalog will refresh automatically.
+                          <strong>Note:</strong> Once Docker is running, the
+                          catalog will refresh automatically.
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
-              
+
               <div className="space-y-2 pb-4 grid md:grid-cols-2 grid-cols-1 gap-2">
                 {!error && paginatedTools.length > 0 ? (
                   paginatedTools.map((tool) => (
@@ -489,11 +513,13 @@ export function MCPToolPopover() {
                               variant="ghost"
                               size="icon"
                               className="size-7 text-destructive hover:text-destructive"
-                              onClick={() => setInstallDialog({ 
-                                open: true, 
-                                mcp: tool, 
-                                action: 'uninstall' 
-                              })}
+                              onClick={() =>
+                                setInstallDialog({
+                                  open: true,
+                                  mcp: tool,
+                                  action: 'uninstall',
+                                })
+                              }
                               disabled={isUninstalling}
                             >
                               <RiDeleteBinLine className="size-3.5" />
@@ -505,11 +531,13 @@ export function MCPToolPopover() {
                               variant="ghost"
                               size="icon"
                               className="size-7 text-primary hover:text-primary"
-                              onClick={() => setInstallDialog({ 
-                                open: true, 
-                                mcp: tool, 
-                                action: 'install' 
-                              })}
+                              onClick={() =>
+                                setInstallDialog({
+                                  open: true,
+                                  mcp: tool,
+                                  action: 'install',
+                                })
+                              }
                               disabled={isInstalling}
                             >
                               <RiDownload2Line className="size-3.5" />
@@ -541,20 +569,22 @@ export function MCPToolPopover() {
                   </div>
                 )}
               </div>
-              
+
               {/* Pagination Controls */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2 pt-4 border-t">
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(1, prev - 1))
+                    }
                     disabled={currentPage === 1}
                     className="h-7 px-2 text-xs"
                   >
                     Previous
                   </Button>
-                  
+
                   <div className="flex items-center gap-1">
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       let pageNum
@@ -567,11 +597,13 @@ export function MCPToolPopover() {
                       } else {
                         pageNum = currentPage - 2 + i
                       }
-                      
+
                       return (
                         <Button
                           key={pageNum}
-                          variant={currentPage === pageNum ? "default" : "outline"}
+                          variant={
+                            currentPage === pageNum ? 'default' : 'outline'
+                          }
                           size="sm"
                           onClick={() => setCurrentPage(pageNum)}
                           className="h-7 w-7 p-0 text-xs"
@@ -581,11 +613,13 @@ export function MCPToolPopover() {
                       )
                     })}
                   </div>
-                  
+
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                    }
                     disabled={currentPage === totalPages}
                     className="h-7 px-2 text-xs"
                   >
@@ -620,7 +654,9 @@ export function MCPToolPopover() {
       {installDialog.mcp && (
         <MCPInstallDialog
           open={installDialog.open}
-          onOpenChange={(open) => setInstallDialog(prev => ({ ...prev, open }))}
+          onOpenChange={(open) =>
+            setInstallDialog((prev) => ({ ...prev, open }))
+          }
           mcp={installDialog.mcp}
           action={installDialog.action}
           onConfirm={async () => {

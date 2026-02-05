@@ -8,7 +8,7 @@ import {
   RiSignalTowerLine,
 } from '@remixicon/react'
 import { useState } from 'react'
-import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
+import { TooltipIconButton } from '@/components/tooltip-icon-button'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ChangelogSettings } from './changelog-settings'
@@ -79,7 +79,7 @@ export function SettingsDialog() {
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="p-3 border-input rounded-full shadow-none data-[state=active]:bg-primary! data-[state=active]:text-primary-foreground"
+                    className="p-3 border-input rounded-full shadow-none data-[state=active]:bg-primary data-[state=active]:text-foreground dark:data-[state=active]:hover:text-foreground"
                   >
                     {tab.icon}
                     {tab.label}
