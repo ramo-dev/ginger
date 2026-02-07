@@ -92,10 +92,10 @@ export type InstalledMCP = {
 export type MCPError = {
   /** Error type for categorization */
   type:
-    | 'docker_not_running'
-    | 'docker_not_installed'
-    | 'network_error'
-    | 'unknown'
+  | 'docker_not_running'
+  | 'docker_not_installed'
+  | 'network_error'
+  | 'unknown'
   /** Main error message */
   message: string
   /** Standard error output from command */
@@ -215,24 +215,90 @@ export const fetchInstalledMCPs = createServerFn().handler(async () => {
  * Installs an MCP server from the Docker catalog
  * Downloads and configures an MCP server for local use
  *
+ * @param mcpName - The name of the MCP to install (e.g., 'playwright', 'duckduckgo')
  * @returns Installation result with success status and message
  * @throws MCPError When installation fails
  */
-export const installMCP = createServerFn().handler(async () => {
-  // For now, we'll implement this as a simple version
-  // In a real implementation, you'd pass the mcpId through the request body
-  return { success: false, message: 'Not implemented yet' }
-})
+export const installMCP = createServerFn({ method: 'POST' }).handler(
+  async (ctx) => {
+    try {
+      const mcpName = (ctx.data || '') as string
+
+      if (!mcpName) {
+        return {
+          success: false,
+          message: 'MCP name is required',
+        }
+      }
+
+      // Use docker mcp server enable to install and enable the MCP
+      const { stderr } = await execAsync(`docker mcp server enable ${mcpName}`)
+
+      // Check if the command was successful
+      if (stderr && !stderr.includes('Successfully')) {
+        throw new Error(stderr)
+      }
+
+      return {
+        success: true,
+        message: `Successfully installed "${mcpName}"`,
+      }
+    } catch (error) {
+      const mcpError = createMCPError(error)
+      console.error('Failed to install MCP:', mcpError)
+
+      return {
+        success: false,
+        message: mcpError.helpfulMessage || 'Failed to install MCP',
+        error: mcpError.message,
+      }
+    }
+  },
+)
 
 /**
  * Uninstalls an MCP server
  * Removes an MCP server from the local system
  *
+ * @param mcpName - The name of the MCP to uninstall
  * @returns Uninstallation result with success status and message
  * @throws MCPError When uninstallation fails
  */
-export const uninstallMCP = createServerFn().handler(async () => {
-  // For now, we'll implement this as a simple version
-  // In a real implementation, you'd pass the mcpId through the request body
-  return { success: false, message: 'Not implemented yet' }
-})
+export const uninstallMCP = createServerFn({ method: 'POST' }).handler(
+  async (ctx) => {
+    try {
+      const mcpName = (ctx.data || '') as string
+
+      if (!mcpName) {
+        return {
+          success: false,
+          message: 'MCP name is required',
+        }
+      }
+
+      // Use docker mcp server disable to uninstall the MCP
+      const { stderr } = await execAsync(`docker mcp server disable ${mcpName}`)
+
+      // Check if the command was successful
+      if (stderr && !stderr.includes('Successfully')) {
+        throw new Error(stderr)
+      }
+
+      return {
+        success: true,
+        message: `Successfully uninstalled "${mcpName}"`,
+      }
+    } catch (error) {
+      const mcpError = createMCPError(error)
+      console.error('Failed to uninstall MCP:', mcpError)
+
+      return {
+        success: false,
+        message: mcpError.helpfulMessage || 'Failed to uninstall MCP',
+        error: mcpError.message,
+      }
+    }
+  },
+)
+
+

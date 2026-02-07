@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAllMCPs, MCPConfig } from '@/lib/mcp/mcp-config'
-import { 
-  fetchDockerMCPCatalog, 
-  fetchInstalledMCPs, 
-  installMCP, 
+import {
+  fetchDockerMCPCatalog,
+  fetchInstalledMCPs,
+  installMCP,
   uninstallMCP,
   MCPCatalogItem,
   InstalledMCP,
-  MCPError 
+  MCPError
 } from '@/lib/mcp/mcp.server'
 import { useMCPStore } from '@/lib/store/mcp-store'
 
@@ -20,21 +20,21 @@ interface MCPManagementReturn {
   // Installed MCPs (from system)
   installedMCPs: InstalledMCP[]
   // Combined list with installation status
-  mcpTools: (MCPConfig & { 
+  mcpTools: (MCPConfig & {
     isInstalled: boolean
     installStatus?: 'installed' | undefined
     version?: string | undefined
   })[]
-  
+
   // Loading states
   isLoading: boolean
   isInstalling: boolean
   isUninstalling: boolean
-  
+
   // Status
   status: MCPCatalogStatus
   error: MCPError | null
-  
+
   // Actions
   installMCP: (mcpId: string) => Promise<{ success: boolean; message: string }>
   uninstallMCP: (mcpId: string) => Promise<{ success: boolean; message: string }>
@@ -107,10 +107,10 @@ export function useMCPManagement(): MCPManagementReturn {
       installedMCPs.forEach(installedMcp => {
         // Find matching hardcoded MCP
         const matchingHardcoded = hardcodedMCPs.find(hardcoded => {
-          return hardcoded.id === installedMcp.name || 
-                 hardcoded.name.toLowerCase() === installedMcp.name.toLowerCase()
+          return hardcoded.id === installedMcp.name ||
+            hardcoded.name.toLowerCase() === installedMcp.name.toLowerCase()
         })
-        
+
         if (matchingHardcoded && !enabledMCPs[matchingHardcoded.id]) {
           enableMCP(matchingHardcoded.id)
         }
@@ -121,9 +121,13 @@ export function useMCPManagement(): MCPManagementReturn {
   // Install MCP mutation
   const installMutation = useMutation({
     mutationFn: async (mcpId: string) => {
-      // For now, return a mock response
-      // In a real implementation, you'd call the server action
-      return { success: false, message: 'Installation not implemented yet' }
+      // Get the MCP config to find the actual name for Docker
+      const config = hardcodedMCPs.find(m => m.id === mcpId)
+      const mcpName = config?.id || mcpId
+
+      // Call the server function with the MCP name
+      const result = await installMCP({ data: mcpName })
+      return result
     },
     onSuccess: () => {
       // Refresh installed MCPs after successful installation
@@ -134,9 +138,13 @@ export function useMCPManagement(): MCPManagementReturn {
   // Uninstall MCP mutation
   const uninstallMutation = useMutation({
     mutationFn: async (mcpId: string) => {
-      // For now, return a mock response
-      // In a real implementation, you'd call the server action
-      return { success: false, message: 'Uninstallation not implemented yet' }
+      // Get the MCP config to find the actual name for Docker
+      const config = hardcodedMCPs.find(m => m.id === mcpId)
+      const mcpName = config?.id || mcpId
+
+      // Call the server function with the MCP name
+      const result = await uninstallMCP({ data: mcpName })
+      return result
     },
     onSuccess: () => {
       // Refresh installed MCPs after successful uninstallation
@@ -152,14 +160,14 @@ export function useMCPManagement(): MCPManagementReturn {
 
     // Create a map of hardcoded MCPs by ID for quick lookup
     const hardcodedMap = new Map(hardcodedMCPs.map(mcp => [mcp.id, mcp]))
-    
+
     // Convert Docker catalog items to MCPConfig format
     const dockerMCPs: MCPConfig[] = dockerCatalog
-      .filter((item): item is MCPCatalogItem => 
-        item && 
-        typeof item === 'object' && 
-        'title' in item && 
-        'description' in item && 
+      .filter((item): item is MCPCatalogItem =>
+        item &&
+        typeof item === 'object' &&
+        'title' in item &&
+        'description' in item &&
         'metadata' in item &&
         'category' in item.metadata
       )
@@ -189,7 +197,7 @@ export function useMCPManagement(): MCPManagementReturn {
       // Add multiple keys for matching
       map.set(mcp.name.toLowerCase(), mcp) // exact name
       map.set(mcp.name, mcp) // original case
-      
+
       // Try to match common variations
       if (mcp.name === 'playwright') {
         map.set('playwrights', mcp) // hardcoded ID
@@ -224,7 +232,7 @@ export function useMCPManagement(): MCPManagementReturn {
       const installedByName = installedMCPsMap.get(mcp.name)
       const installedById = installedMCPsMap.get(mcp.id)
       const installed = installedByName || installedById
-      
+
       return {
         ...mcp,
         isInstalled: !!installed,

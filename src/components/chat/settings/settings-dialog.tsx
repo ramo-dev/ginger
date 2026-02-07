@@ -16,6 +16,8 @@ import { ChangelogSettings } from './tabs/changelog/changelog-settings'
 import { GeneralSettings } from './tabs/general/general-settings'
 import { ModelSettings } from './tabs/model/model-settings'
 import { ProviderSettings } from './tabs/provider/provider-settings'
+import { MCPSettings } from './tabs/mcp/mcp-settings'
+
 
 export function SettingsDialog() {
   const [open, setOpen] = useState(false)
@@ -111,6 +113,8 @@ export function SettingsDialog() {
             {activeTab === 'models' && (
               <ModelSettings setActiveTab={setActiveTab} />
             )}
+
+            {activeTab === 'mcps' && <MCPSettings />}
 
             {activeTab === 'changelog' && <ChangelogSettings />}
           </div>
