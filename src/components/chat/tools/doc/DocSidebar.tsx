@@ -16,17 +16,14 @@ import {
 } from '@remixicon/react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useCopyToClipboard } from '../shared/use-copy-to-clipboard'
+import { useSidebar } from '@/components/ui/sidebar'
+import { cn } from '@/lib/utils'
 
 export default function DocSidebar() {
   const { documents, removeDocument } = useDoc()
-  const {
-    isOpen,
-    isLoading,
-    closeSidebar,
-    documentContent,
-    documentTitle,
-    documentFileType,
-  } = useDocSidebar()
+  const { isOpen, isLoading, closeSidebar, documentContent, documentTitle } =
+    useDocSidebar()
+  const { open: mainSidebarOpen } = useSidebar()
   const { copy, copiedId } = useCopyToClipboard()
 
   const handleCopy = async (content: string | null) => {
@@ -38,7 +35,7 @@ export default function DocSidebar() {
 
   // Only show completed documents from the last 30 minutes
   const recentDocuments = documents.filter(
-    (doc) => Date.now() - doc.timestamp < 30 * 60 * 1000, // 30 minutes
+    (doc) => Date.now() - doc.timestamp < 30 * 60 * 1000,
   )
 
   if (recentDocuments.length === 0 && !isOpen && !isLoading) {
@@ -46,7 +43,12 @@ export default function DocSidebar() {
   }
 
   return (
-    <div className=" h-full flex-1 w-full  bg-background z-50 transform transition-transform duration-300 ease-in-out">
+    <div
+      className={cn(
+        mainSidebarOpen ? 'max-w-[650px]' : 'max-w-5xl',
+        'h-full w-full bg-background z-50 transform transition-transform duration-300 ease-in-out',
+      )}
+    >
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b">
         <div className="flex items-center gap-2">
@@ -81,8 +83,8 @@ export default function DocSidebar() {
       <div className="flex-1 overflow-y-auto space-y-4">
         {/* Focused Document */}
         {documentContent && documentTitle ? (
-          <ScrollArea className="h-[calc(100vh-10rem)] pt-4 px-4">
-            <Message from="assistant">
+          <ScrollArea className="h-[calc(100vh-6rem)] px-4">
+            <Message from="assistant" className="pt-4">
               <MessageContent>
                 <MessageResponse>{documentContent}</MessageResponse>
               </MessageContent>

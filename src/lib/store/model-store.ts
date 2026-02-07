@@ -9,9 +9,11 @@ interface ModelState {
   ollamaBaseUrl: string
   ollamaModels: Model[]
   isOllamaEnabled: boolean
+  reasoning: boolean
 
   // Actions
   setSelectedModel: (modelId: string, provider: ModelProvider) => void
+  setReasoning: (val: boolean) => void
   setOllamaBaseUrl: (url: string) => void
   setOllamaModels: (models: Model[]) => void
   setOllamaEnabled: (enabled: boolean) => void
@@ -23,33 +25,35 @@ interface ModelState {
 export const useModelStore = create<ModelState>()(
   persist(
     (set, get) => ({
-      selectedModelId: 'gpt-4o',
-      selectedProvider: 'openai', // Default to openai or whatever is configured in backend defaults
+      selectedModelId: 'z-ai/glm-4.5-air:free',
+      selectedProvider: 'openrouter',
       ollamaBaseUrl: 'http://localhost:11434',
       ollamaModels: [],
       isOllamaEnabled: false,
+      reasoning: true,
 
+      setReasoning: (val) => {
+        set({ reasoning: val })
+        // Auto-sync to server
+        get().syncToServer()
+      },
       setSelectedModel: (modelId, provider) => {
         set({ selectedModelId: modelId, selectedProvider: provider })
-        // Auto-sync to server
         get().syncToServer()
       },
 
       setOllamaBaseUrl: (url) => {
         set({ ollamaBaseUrl: url })
-        // Auto-sync to server
         get().syncToServer()
       },
 
       setOllamaModels: (models) => {
         set({ ollamaModels: models })
-        // Auto-sync to server
         get().syncToServer()
       },
 
       setOllamaEnabled: (enabled) => {
         set({ isOllamaEnabled: enabled })
-        // Auto-sync to server
         get().syncToServer()
       },
 

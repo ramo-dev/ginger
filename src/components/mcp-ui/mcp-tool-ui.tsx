@@ -64,7 +64,6 @@ export function MCPToolPopover() {
 
   const {
     mcpTools,
-    status,
     isLoading,
     isInstalling,
     isUninstalling,
@@ -495,7 +494,6 @@ export function MCPToolPopover() {
                                 className="h-4 px-1.5 text-[9px] uppercase tracking-tight"
                               >
                                 <RiCheckLine className="size-2.5 mr-0.5" />
-                                {tool.installStatus || 'installed'}
                               </Badge>
                             )}
                             {tool.version && (

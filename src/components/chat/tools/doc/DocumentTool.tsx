@@ -1,10 +1,3 @@
-'use client'
-
-import {
-  Message,
-  MessageContent,
-  MessageResponse,
-} from '@/components/ai-elements/message'
 import { Button } from '@/components/ui/button'
 import {
   RiDownload2Line,
@@ -20,7 +13,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useDocSidebar } from '@/hooks/use-doc-sidebar'
 import { useSidebar } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Progress } from '@/components/ui/progress'
 
 export interface DocumentToolProps {
   input: {
@@ -41,15 +33,9 @@ export interface DocumentToolProps {
   type: 'tool-createDocument' | 'tool-editDocument'
 }
 
-export function DocumentTool({
-  input,
-  output,
-  errorText,
-  state,
-  type,
-}: DocumentToolProps) {
+export function DocumentTool({ output, errorText, state }: DocumentToolProps) {
   const [copied, setCopied] = useState(false)
-  const { openSidebar, setLoading } = useDocSidebar()
+  const { openSidebar, setLoading, isOpen } = useDocSidebar()
   const { setOpen: setOpenMainSidebar } = useSidebar()
 
   // Debug logging to help identify the issue
@@ -158,14 +144,16 @@ export function DocumentTool({
             >
               <RiDownload2Line className="w-4 h-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleViewDocument}
-              title="View document"
-            >
-              <RiExpandDiagonalLine className="w-4 h-4" />
-            </Button>
+            {isOpen && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleViewDocument}
+                title="View document"
+              >
+                <RiExpandDiagonalLine className="w-4 h-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>

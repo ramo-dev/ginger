@@ -33,16 +33,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 import type { ChatStatus, FileUIPart, SourceDocumentUIPart } from 'ai'
 import {
-  CornerDownLeftIcon,
-  ImageIcon,
-  PlusIcon,
-  SquareIcon,
-  XIcon,
-} from 'lucide-react'
+  RiImageLine,
+  RiAddLine,
+  RiCheckboxBlankLine,
+  RiCloseLine,
+  RiSendPlaneLine,
+} from '@remixicon/react'
 import { nanoid } from 'nanoid'
 import {
   type ChangeEvent,
@@ -64,6 +63,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { InfiniteLoader } from '../chat/chat-ui/ModelStreaming'
 
 // ============================================================================
 // Provider Context & Types
@@ -315,7 +315,7 @@ export const PromptInputActionAddAttachments = ({
         attachments.openFileDialog()
       }}
     >
-      <ImageIcon className="mr-2 size-4" /> {label}
+      <RiImageLine className="mr-2 size-4" /> {label}
     </DropdownMenuItem>
   )
 }
@@ -889,7 +889,10 @@ export const PromptInputTextarea = ({
 
   return (
     <InputGroupTextarea
-      className={cn('field-sizing-content max-h-48 min-h-16', className)}
+      className={cn(
+        'field-sizing-content rounded-2xl max-h-48 min-h-16',
+        className,
+      )}
       name="message"
       onCompositionEnd={() => setIsComposing(false)}
       onCompositionStart={() => setIsComposing(true)}
@@ -980,7 +983,7 @@ export const PromptInputActionMenuTrigger = ({
   <DropdownMenuTrigger
     render={<PromptInputButton className={className} {...props} />}
   >
-    {children ?? <PlusIcon className="size-4" />}
+    {children ?? <RiAddLine className="size-4" />}
   </DropdownMenuTrigger>
 )
 
@@ -1024,14 +1027,14 @@ export const PromptInputSubmit = ({
 }: PromptInputSubmitProps) => {
   const isGenerating = status === 'submitted' || status === 'streaming'
 
-  let Icon = <CornerDownLeftIcon className="size-4" />
+  let Icon = <RiSendPlaneLine className="size-4" />
 
   if (status === 'submitted') {
-    Icon = <Spinner />
+    Icon = <InfiniteLoader />
   } else if (status === 'streaming') {
-    Icon = <SquareIcon className="size-4" />
+    Icon = <RiCheckboxBlankLine className="size-4" />
   } else if (status === 'error') {
-    Icon = <XIcon className="size-4" />
+    Icon = <RiCloseLine className="size-4" />
   }
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {

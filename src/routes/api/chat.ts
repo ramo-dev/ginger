@@ -6,11 +6,11 @@ import {
   getAllClients,
   mergeAllTools,
 } from '@/lib/mcp/mcp-client'
+import { duckduckgoMCP } from '@/lib/mcp/mcp-custom'
 import { ModelProviderFactory } from '@/lib/providers/provider-factory'
 import { OpenRouterProviderOptions } from '@openrouter/ai-sdk-provider'
 import { tools } from './(chat)/tools/-index'
 import { SYS_PROMPT_WITH_CONTEXT } from '@/lib/ai/model'
-
 
 export const Route = createFileRoute('/api/chat')({
   server: {
@@ -22,16 +22,20 @@ export const Route = createFileRoute('/api/chat')({
           model,
           provider,
           ollamaUrl,
+          reasoning,
         }: {
           messages: UIMessage[]
           enabledMCPs?: EnabledMCPs
           model?: string
           provider?: string
           ollamaUrl?: string
+          reasoning?: boolean
         } = await request.json()
 
-        let allTools = { ...tools }
-        console.log("ALL_TOOLS", allTools);
+        console.log('SELECTED_MODEL', model, provider)
+
+        const searchTool = await duckduckgoMCP.tools()
+        let allTools = { ...tools, ...searchTool }
         let mcpClients: Record<string, any> = {}
 
         // Check if any MCPs are enabled
@@ -43,9 +47,11 @@ export const Route = createFileRoute('/api/chat')({
           // Dynamically create only the enabled MCP clients
           mcpClients = await createMCPClients(enabledMCPs)
 
-          // Merge all MCP tools into the tools object
+          //Merge all MCP tools into the tools object
           const mcpTools = mergeAllTools(mcpClients)
           allTools = { ...allTools, ...mcpTools }
+
+          console.log('ALL_TOOLS', allTools)
         }
 
         const languageModel = ModelProviderFactory.createModel({
@@ -61,7 +67,7 @@ export const Route = createFileRoute('/api/chat')({
           tools: allTools,
           providerOptions: {
             reasoning: {
-              enabled: true,
+              enabled: reasoning,
               effort: 'medium',
             },
           } satisfies OpenRouterProviderOptions,
@@ -73,7 +79,7 @@ export const Route = createFileRoute('/api/chat')({
         })
 
         return result.toUIMessageStreamResponse({
-          sendReasoning: true,
+          sendReasoning: reasoning,
           sendSources: true,
         })
       },

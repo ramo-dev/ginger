@@ -1,11 +1,13 @@
 interface LogoProps {
   width?: string
   height?: string
+  className?: string
 }
 
-const Logo = ({ width, height }: LogoProps) => (
+const Logo = ({ width, height, className }: LogoProps) => (
   <svg
     width={width}
+    className={className}
     height={height}
     viewBox="0 0 400 400"
     fill="none"

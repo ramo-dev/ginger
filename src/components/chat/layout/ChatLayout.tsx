@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { MessageList } from '@/components/chat/chat-ui/MessageList'
 import { ChatInput } from '@/components/chat/chat-ui/ChatInput'
@@ -19,17 +19,34 @@ const ChatLayout = () => {
   const [useWebSearch, setUseWebSearch] = useState<boolean>(false)
   const [useMicrophone, setUseMicrophone] = useState<boolean>(false)
   const { enabledMCPs } = useMCPStore()
-  const { selectedModelId, selectedProvider, ollamaBaseUrl } = useModelStore()
-  const { messages, sendMessage, status, regenerate } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-      body: {
-        enabledMCPs,
-        model: selectedModelId,
-        provider: selectedProvider,
-        ollamaUrl: ollamaBaseUrl,
-      },
-    }),
+  const { selectedModelId, selectedProvider, ollamaBaseUrl, reasoning } =
+    useModelStore()
+
+  const chatTransport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: '/api/chat',
+        body: {
+          enabledMCPs,
+          model: selectedModelId,
+          provider: selectedProvider,
+          ollamaUrl: ollamaBaseUrl,
+          reasoning: reasoning,
+        },
+      }),
+    [selectedModelId, selectedProvider, ollamaBaseUrl, reasoning, enabledMCPs],
+  )
+
+  const {
+    messages,
+    sendMessage,
+    status,
+    regenerate,
+    setMessages,
+    stop,
+    resumeStream: resume,
+  } = useChat({
+    transport: chatTransport,
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
   })
 
@@ -61,6 +78,10 @@ const ChatLayout = () => {
   return (
     <div className="relative max-h-screen h-full justify-between flex size-full flex-col overflow-hidden">
       <MessageList
+        stop={stop}
+        resume={resume}
+        setMessages={setMessages}
+        sendMessage={sendMessage}
         regenerate={regenerate}
         messages={messages}
         status={status}
@@ -72,6 +93,8 @@ const ChatLayout = () => {
       )}
       <div className="grid shrink-0 gap-4 max-w-3xl w-full mx-auto pt-4">
         <ChatInput
+          stop={stop}
+          resume={resume}
           text={text}
           setText={setText}
           useWebSearch={useWebSearch}

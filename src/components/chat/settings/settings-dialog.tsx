@@ -6,15 +6,16 @@ import {
   RiGitMergeLine,
   RiSettings3Line,
   RiSignalTowerLine,
+  RiToolsLine,
 } from '@remixicon/react'
 import { useState } from 'react'
 import { TooltipIconButton } from '@/components/tooltip-icon-button'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ChangelogSettings } from './changelog-settings'
-import { GeneralSettings } from './general-settings'
-import { ModelSettings } from './model-settings'
-import { ProviderSettings } from './provider-settings'
+import { ChangelogSettings } from './tabs/changelog/changelog-settings'
+import { GeneralSettings } from './tabs/general/general-settings'
+import { ModelSettings } from './tabs/model/model-settings'
+import { ProviderSettings } from './tabs/provider/provider-settings'
 
 export function SettingsDialog() {
   const [open, setOpen] = useState(false)
@@ -71,6 +72,11 @@ export function SettingsDialog() {
                     icon: <RiBrainAi3Line className="size-4 mr-2 opacity-70" />,
                   },
                   {
+                    value: 'mcps',
+                    label: 'Tools & MCPs',
+                    icon: <RiToolsLine className="size-4 mr-2 opacity-70" />,
+                  },
+                  {
                     value: 'changelog',
                     label: 'Changelog',
                     icon: <RiGitMergeLine className="size-4 mr-2 opacity-70" />,
@@ -79,7 +85,7 @@ export function SettingsDialog() {
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="p-3 border-input rounded-full shadow-none data-[state=active]:bg-primary data-[state=active]:text-foreground dark:data-[state=active]:hover:text-foreground"
+                    className="p-3 border-input rounded-full shadow-none"
                   >
                     {tab.icon}
                     {tab.label}

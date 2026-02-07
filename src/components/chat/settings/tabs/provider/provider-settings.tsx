@@ -47,7 +47,7 @@ export function ProviderSettings() {
         details: m.details as Record<string, unknown>,
       }))
 
-      setOllamaModels(models)
+      setOllamaModels(models as any)
       toast.success(`Successfully connected! Found ${models.length} models.`)
     } catch (error) {
       console.error(error)
